@@ -1,0 +1,120 @@
+#pragma once
+template<class T>
+class JBMinHeap {
+private:
+	T* _minHeap = NULL;
+	int _index, _maxSize;
+public:
+	JBMinHeap(int maxSize) {
+		_maxSize = maxSize;
+		_minHeap = new T[_maxSize];
+		_index = -1;
+	}
+	JBMinHeap(JBMinHeap &h) {
+		_index = h._index;
+		_maxSize = h._maxSize;
+		_minHeap = new T[_maxSize];
+		for (int i = 0; i < _maxSize) {
+			*_minHeap[i] = *h._minHeap[i];
+		}
+	}
+	~JBMinHeap() {
+		delete[]_minHeap;
+	}
+	//获取整个最小堆的头部指针
+	T* getMinheap() {
+		return _minHeap;
+	}
+	//判断堆是不是空的
+	bool isEmpty() {
+		return _index == -1;
+	}
+	bool add(T x) {
+		if (isFull()) {
+			return false;
+		}
+		_index++;
+		_minHeap[_index] = x;
+		return true;
+	}
+	bool isFull() {
+		return _index == _maxSize;
+	}
+	//堆进行向下调整
+	void adjustDown(int index);
+	void adjustUp(int index);
+	void createMinheap() {
+		if (isEmpty()) {
+			return;
+		}
+		for (int i = (_index - 1) / 2; i > -1; i--) {//直接从倒数第二层 逐层向下调整
+			adjustDown(i);
+		}
+	}
+
+
+};
+template<class T>
+void JBMinHeap<T>::adjustDown(int index) {
+	if (isEmpty()) {
+		return;
+	}
+	while (index < _index) {
+		T temp = _minHeap[index];//将当前索引的位置的值保存下来
+		int oneC = 2 * index + 1;//获取俩个孩子的位置
+		int twoV = 2 * index + 2;
+		if (oneC == _index) {//若第一个孩子是整个堆最后一个位置，则直接执行交换操作
+			_minHeap[index] = _minHeap[oneC];
+			_minHeap[oneC] = temp;
+			return;
+		}
+		if (twoC > _index) {//如果第二个孩子索引越界 结束执行
+			return;
+		}
+		if (_minHeap[oneC] <= _minHeap[twoC]) { //正常情况下左孩子小于右孩子
+			if (temp > _minHeap[oneC]) {//temp和twoC都比oneC大 oneC即为所要找的孩子
+				_minHeap[index] = _minHeap[oneC];
+				_minHeap[oneC] = temp;
+				index = oneC;
+			}
+			else {
+				index = _index; //如果该处索引值已经是比两个孩子小 则结束循环
+			}
+		}
+		else {
+			if (temp > _minHeap[twoC]) {
+				_minHeap[index] = _minHeap[twoC];
+				_minHeap[twoC] = temp;
+				index = twoC;
+			}
+			else {
+				index = _index;
+			}
+		}
+	}
+
+}
+
+template<class T>
+void JBMinHeap<T>::adjustUp(int index) {
+	if (index > _index) {
+		return;
+	}
+	while (index > -1) {
+		T temp = _minHeap[index];
+		int father = (index - 1) / 2;
+		if (father >= 0) {
+			if (temp > _minHeap[father]) {
+				_minHeap[index] = _minHeap[father];
+				_minHeap[father] = temp;
+				index = father;
+			}
+			else {
+				index = -1;
+			}
+		}
+		else {
+			index = -1;
+		}
+	}
+}
