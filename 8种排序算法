@@ -73,3 +73,20 @@ void quickSort(int arr[], int l, int r)
     }
 }
 
+5.选择排序
+void selectSort(int arr[], int length) {
+	int startScan, minIndex, minValue;
+	for (startScan = 0; startScan < length - 1; startScan++) {
+		minIndex = startScan;
+		minValue = arr[startScan];
+		for (int index = startScan + 1; index < length; index++) {
+			if (arr[index] < minValue) {
+				minValue = arr[index];
+				minIndex = index;
+			}
+		}
+		arr[minIndex] = arr[startScan];
+		arr[startScan] = minValue;
+	}
+
+}
